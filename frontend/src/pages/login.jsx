@@ -1,45 +1,65 @@
-import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
-import LoginContainer from "./pages.styles.css";
+import { useEffect } from "react";
+import { TextInput, PasswordInput, Button, Group, Box } from "@mantine/core";
+import { useForm, isEmail } from "@mantine/form";
+import { useDispatch, useSelector } from "react-redux";
+import { useLoginMutation } from "../slices/users";
+import { setCredentials } from "../slices/auth";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
+  const { userInfo } = useSelector(state => state.auth);
+
+  const loginForm = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+      termsOfService: false,
+    },
+
+    validate: {
+      email: isEmail("Invalid email"),
+    },
+  });
+
+  // Redirect to my control page if loggedIn
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/settings");
+    }
+  }, [navigate, userInfo]);
 
   const submitHandler = async e => {
-    e.preventDefault();
-    console.log("submit");
+    try {
+      const res = await login({ e }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate("/settings");
+    } catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
   };
 
   return (
     <LoginContainer>
       <div className="heading1">Sign In</div>
-
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="heading2" controlId="email">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group className="heading2" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Button type="submit" variant="primary" className="heading3">
-          Sign In
-        </Button>
-      </Form>
+      <div className="login-form-wrapper">
+        <Box component={loginForm} maw={400} mx="auto" onSubmit={form.onSubmit(e => submitHandler(e))}>
+          <TextInput withAsterisk label="Email" placeholder="your@email.com" {...form.getInputProps("email")} />
+          <PasswordInput withAsterisk label="Password" placeholder="12345678" {...form.getInputProps("password")} />
+          <Group position="center" mt="md">
+            <Button
+              variant="light"
+              radius="md"
+              disabled={isLoading || !form.isTouched()}
+              type="submit"
+              className="heading-3"
+            >
+              Sign In
+            </Button>
+          </Group>
+        </Box>
+      </div>
     </LoginContainer>
   );
 };

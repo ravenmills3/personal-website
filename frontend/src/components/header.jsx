@@ -1,33 +1,31 @@
-import { Navbar, Nav, Container } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { Box, Container } from "@mantine/core";
+import { Link } from "react-router-dom";
 import { FaUserAlt, FaCommentAlt } from "react-icons/fa";
 
 const Header = () => {
   return (
-    <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
-        <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand href="/">Raven's Mind</Navbar.Brand>
-          </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              <LinkContainer to="/login">
-                <Nav.Link>
-                  <FaUserAlt />
-                </Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/message">
-                <Nav.Link>
-                  <FaCommentAlt /> Contact Me
-                </Nav.Link>
-              </LinkContainer>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </header>
+    <div className="nav-bar">
+      <Container>
+        <Box component={Link} to="/">
+          Raven's Mind
+        </Box>
+        <Box component={Link} to="/projects">
+          Projects
+        </Box>
+        <Box component={Link} to="/books">
+          Bookshelf
+        </Box>
+        <Box component={Link} to="/resume">
+          Resume
+        </Box>
+        <Box component={Link} to="/message">
+          <FaCommentAlt /> Contact Me
+        </Box>
+        <Box component={Link} to="/login">
+          <FaUserAlt />
+        </Box>
+      </Container>
+    </div>
   );
 };
 
