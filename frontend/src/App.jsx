@@ -1,14 +1,23 @@
-import { MantineProvider, Container } from "@mantine/core";
-import Header from "./components/header";
-import { Outlet } from "react-router-dom";
+import { MantineProvider } from "@mantine/core";
+import AppNav from "./components/header";
+import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "./components/errorBoundary";
+import AnimatedRoutes from "./routes";
 
 const App = () => {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Header />
-      <Container className="my-2">
-        <Outlet />
-      </Container>
+    <MantineProvider
+      withCSSVariables
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{ colorScheme: "light", primaryColor: "pink" }}
+    >
+      <ErrorBoundary>
+        <BrowserRouter>
+          <AppNav />
+          <AnimatedRoutes />
+        </BrowserRouter>
+      </ErrorBoundary>
     </MantineProvider>
   );
 };
